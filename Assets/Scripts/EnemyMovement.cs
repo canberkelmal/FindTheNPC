@@ -13,7 +13,6 @@ public class EnemyMovement : MonoBehaviour
     public GameObject marker;
     public Vector3 dest;
     public Text reachCounter;
-    public bool mrk=true;
     bool isWalking;
     float v;
     int isWalkingHash;
@@ -41,20 +40,22 @@ public class EnemyMovement : MonoBehaviour
             animator.SetBool(isWalkingHash, false);
         }
 
-        if(enMesh.velocity.sqrMagnitude == 0f && mrk){
+        if(enMesh.remainingDistance<2.1f){
             RandomPos();
             enMesh.destination=dest;
-            mrk=false;
-            reachCounter.text=(int.Parse(reachCounter.text)+1).ToString();
+            
         }
-        if(enMesh.velocity.sqrMagnitude >0.5f){
-            mrk=true;
+
+        if(dest!=marker.transform.position){
+            enMesh.destination=marker.transform.position;
         }
     }
 
     public void RandomPos(){
+        Debug.Log("RandomPos");
         dest=new Vector3(Random.Range(targetObject1.transform.position.x,targetObject2.transform.position.x), 0.5f, Random.Range(targetObject1.transform.position.z,targetObject2.transform.position.z));
-        marker.transform.position=dest;
+        marker.transform.position=dest;        
+        reachCounter.text=(int.Parse(reachCounter.text)+1).ToString();
     }
 
     

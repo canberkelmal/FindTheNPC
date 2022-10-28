@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     
     
     NavMeshAgent pMesh;
+    bool isWalking;
     public GameObject enemy;
     public Vector3 target;
     public Text hitCounter;
@@ -16,10 +17,8 @@ public class PlayerMovement : MonoBehaviour
     Animator animator;
     float v;
     int isWalkingHash;
-    int isCatchHash;
-    bool isWalking;
-    bool isCatch;
-    bool isAttacked=false;
+    bool attacked=false;
+    bool attackStarted=false;
 
     void Start()
     {
@@ -27,32 +26,23 @@ public class PlayerMovement : MonoBehaviour
         hitCounter.text="0";
         animator=transform.GetChild(0).GetComponent<Animator>();
         isWalkingHash=Animator.StringToHash("isWalking");
-        isCatchHash=Animator.StringToHash("isCatch");
         //target=new Vector3(6, 0.5f, 6);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        
         //Debug.DrawRay(transform.position, Vector3.forward, Color.red);
 
         //Debug.Log(pMesh.velocity.sqrMagnitude);
         isWalking=animator.GetBool(isWalkingHash);
-        isCatch=animator.GetBool(isCatchHash);
         v=pMesh.velocity.sqrMagnitude;
         if(v != 0f && !isWalking){
             animator.SetBool(isWalkingHash, true);
         }
         if(v == 0f && isWalking){
             animator.SetBool(isWalkingHash, false);
-        }
-        if(isCatch){
-            animator.SetBool(isCatchHash, false);
-            isAttacked=true;
-        }
-        if(isAttacked && isWalking){
-            isAttacked=false;
-            teleportEnemy();
         }
 
         if(Input.GetMouseButton(0)){
@@ -73,17 +63,31 @@ public class PlayerMovement : MonoBehaviour
             //target.z=0.5f;
             //pMesh.destination=target;
         }
+    
+        
+    
+    }
+
+    void Update(){
+        if(attacked && animator.GetCurrentAnimatorStateInfo(0).fullPathHash==1130333774){
+            attackStarted=true;
+        }
+        
+        if(attackStarted &&  attacked && animator.GetCurrentAnimatorStateInfo(0).fullPathHash!=1130333774){
+            attacked=false;
+            attackStarted=false;
+            enemy.gameObject.transform.position=new Vector3(Random.Range(-7,7), 0.5f, Random.Range(-7,7));
+        }
     }
 
     void OnTriggerEnter(Collider other){
-        if(other.gameObject.tag=="Enemy"){
+        if(other.gameObject.tag=="Enemy" && !attackStarted){
+            enemy=other.gameObject;
+            Debug.Log("hit");
+            hitCounter.text=(int.Parse(hitCounter.text)+1).ToString();
+            animator.SetTrigger("Attack");
+            attacked=true;
             
-            animator.SetBool(isCatchHash, true);
-            Debug.Log("attack!");
         }
     }
-     void teleportEnemy(){
-        enemy.gameObject.transform.position=new Vector3(Random.Range(-7,7), 0.5f, Random.Range(-7,7));
-        hitCounter.text=(int.Parse(hitCounter.text)+1).ToString();        
-     }
 }
