@@ -31,7 +31,7 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).fullPathHash);
+        //Debug.Log(animator.GetCurrentAnimatorStateInfo(0).fullPathHash);
 
         isWalking=animator.GetBool(isWalkingHash);
         v=enMesh.velocity.sqrMagnitude;

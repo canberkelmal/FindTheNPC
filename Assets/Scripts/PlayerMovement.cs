@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     bool attackStarted=false;
     bool death=false;
     bool deathStarted=false;
+    bool revive=true;
     public GameObject reff;
 
     void Start()
@@ -72,11 +73,11 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update(){
-        if(attacked && animator.GetCurrentAnimatorStateInfo(0).fullPathHash==1130333774){
+        if(attacked /* && animator.GetCurrentAnimatorStateInfo(0).fullPathHash==1130333774 */){
             attackStarted=true;
         }
         
-        if(attackStarted &&  attacked && animator.GetCurrentAnimatorStateInfo(0).fullPathHash!=1130333774){
+        if(attackStarted &&  attacked /* && animator.GetCurrentAnimatorStateInfo(0).fullPathHash!=1130333774 */){
             attacked=false;
             attackStarted=false;
             eAnimator.SetTrigger("Death");
@@ -90,12 +91,14 @@ public class PlayerMovement : MonoBehaviour
             death=false;
             deathStarted=false;
             enemy.gameObject.transform.position=new Vector3(Random.Range(-7,7), 0.5f, Random.Range(-7,7));
+            revive=true;
 
         }
     }
 
     void OnTriggerEnter(Collider other){
-        if(other.gameObject.tag=="Enemy" && !attackStarted && !deathStarted){
+        if(other.gameObject.tag=="Enemy" && !attackStarted && !deathStarted && revive){
+            revive=false;
             enemy=other.gameObject;
             Debug.Log("hit");
             hitCounter.text=(int.Parse(hitCounter.text)+1).ToString();
