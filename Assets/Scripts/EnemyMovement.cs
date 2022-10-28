@@ -16,6 +16,7 @@ public class EnemyMovement : MonoBehaviour
     bool isWalking;
     float v;
     int isWalkingHash;
+    bool eDeath=false;
     void Start()
     {
         enMesh = GetComponent<NavMeshAgent>();
@@ -30,24 +31,33 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).fullPathHash);
 
         isWalking=animator.GetBool(isWalkingHash);
         v=enMesh.velocity.sqrMagnitude;
-        if(v != 0f && !isWalking){
+        if(v != 0f && !isWalking&&!eDeath){
             animator.SetBool(isWalkingHash, true);
         }
-        if(v == 0f && isWalking){
+        if(v == 0f && isWalking&&!eDeath){
             animator.SetBool(isWalkingHash, false);
         }
 
-        if(enMesh.remainingDistance<2.1f){
+        if(enMesh.remainingDistance<2.1f&&!eDeath){
             RandomPos();
-            enMesh.destination=dest;
-            
+            enMesh.destination=dest;            
         }
 
-        if(dest!=marker.transform.position){
-            enMesh.destination=marker.transform.position;
+        if(!eDeath && animator.GetCurrentAnimatorStateInfo(0).fullPathHash==-1546996312){
+            eDeath=true;
+            enMesh.destination=transform.position;
+        }
+        
+        if(eDeath && animator.GetCurrentAnimatorStateInfo(0).fullPathHash!=-1546996312){
+            eDeath=false;
+        }
+
+        if(dest!=marker.transform.position && !eDeath){
+            enMesh.destination =marker.transform.position;
         }
     }
 
@@ -57,6 +67,8 @@ public class EnemyMovement : MonoBehaviour
         marker.transform.position=dest;        
         reachCounter.text=(int.Parse(reachCounter.text)+1).ToString();
     }
+
+
 
     
 }

@@ -15,10 +15,13 @@ public class PlayerMovement : MonoBehaviour
     public Text hitCounter;
     public LayerMask layerMask;
     Animator animator;
+    Animator eAnimator;
     float v;
     int isWalkingHash;
     bool attacked=false;
     bool attackStarted=false;
+    bool death=false;
+    bool deathStarted=false;
 
     void Start()
     {
@@ -76,16 +79,28 @@ public class PlayerMovement : MonoBehaviour
         if(attackStarted &&  attacked && animator.GetCurrentAnimatorStateInfo(0).fullPathHash!=1130333774){
             attacked=false;
             attackStarted=false;
+            eAnimator.SetTrigger("Death");
+            death=true;
+        }
+
+        if(death && eAnimator.GetCurrentAnimatorStateInfo(0).fullPathHash==-1546996312){
+            deathStarted=true;
+        }
+        if(deathStarted &&  death && eAnimator.GetCurrentAnimatorStateInfo(0).fullPathHash!=-1546996312){
+            death=false;
+            deathStarted=false;
             enemy.gameObject.transform.position=new Vector3(Random.Range(-7,7), 0.5f, Random.Range(-7,7));
+
         }
     }
 
     void OnTriggerEnter(Collider other){
-        if(other.gameObject.tag=="Enemy" && !attackStarted){
+        if(other.gameObject.tag=="Enemy" && !attackStarted && !deathStarted){
             enemy=other.gameObject;
             Debug.Log("hit");
             hitCounter.text=(int.Parse(hitCounter.text)+1).ToString();
             animator.SetTrigger("Attack");
+            eAnimator=enemy.transform.GetChild(0).gameObject.GetComponent<Animator>();
             attacked=true;
             
         }
