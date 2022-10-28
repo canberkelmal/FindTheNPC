@@ -11,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
     NavMeshAgent pMesh;
     bool isWalking;
     public GameObject enemy;
-    public Vector3 target;
     public Text hitCounter;
     public LayerMask layerMask;
     Animator animator;
@@ -22,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     bool attackStarted=false;
     bool death=false;
     bool deathStarted=false;
+    public GameObject reff;
 
     void Start()
     {
@@ -54,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
                 pMesh.destination = hit.point;
-                target=hit.point;
+                reff.transform.position=new Vector3(hit.point.x, reff.transform.position.y, hit.point.z);
                 //Debug.Log(hit.transform.name);
                 //Debug.DrawRay(transform.position, Vector3.forward, Color.red);
             }
