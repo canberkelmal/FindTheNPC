@@ -6,8 +6,6 @@ using UnityEngine.AI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    
-    
     NavMeshAgent pMesh;
     bool isWalking;
     public GameObject enemy;
@@ -23,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     bool deathStarted=false;
     bool revive=true;
     public GameObject reff;
+    public float m_Speed=0.1f;
 
     void Start()
     {
@@ -73,6 +72,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update(){
+        
+        if(animator.GetCurrentAnimatorStateInfo(0).fullPathHash==1130333774){
+            
+            Vector3 lTargetDir = enemy.transform.position - transform.position;
+            //lTargetDir.y = transform.rotation.y;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(lTargetDir), Time.time * m_Speed);
+            
+            //transform.LookAt(enemy.transform);
+        }
+
         if(attacked /* && animator.GetCurrentAnimatorStateInfo(0).fullPathHash==1130333774 */){
             attackStarted=true;
         }
@@ -105,7 +114,6 @@ public class PlayerMovement : MonoBehaviour
             animator.SetTrigger("Attack");
             eAnimator=enemy.transform.GetChild(0).gameObject.GetComponent<Animator>();
             attacked=true;
-            
         }
     }
 }
