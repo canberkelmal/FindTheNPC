@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     NavMeshAgent pMesh;
     bool isWalking;
-    public GameObject enemy;
+    GameObject enemy;
     public Text hitCounter;
     public LayerMask layerMask;
     Animator animator;
