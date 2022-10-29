@@ -17,6 +17,9 @@ public class EnemyMovement : MonoBehaviour
     float v;
     int isWalkingHash;
     bool eDeath=false;
+    Vector2 check=new Vector2(1,1);
+    Vector2 check2=new Vector2(1,1);
+    Vector3 tempLoc;
     void Start()
     {
         enMesh = GetComponent<NavMeshAgent>();
@@ -42,7 +45,7 @@ public class EnemyMovement : MonoBehaviour
             animator.SetBool(isWalkingHash, false);
         }
 
-        if(enMesh.remainingDistance<2.1f&&!eDeath){
+        if(enMesh.remainingDistance<1.5f&&!eDeath){
             RandomPos();
             enMesh.destination=dest;            
         }
@@ -63,7 +66,17 @@ public class EnemyMovement : MonoBehaviour
 
     public void RandomPos(){
         Debug.Log("RandomPos");
-        dest=new Vector3(Random.Range(targetObject1.transform.position.x,targetObject2.transform.position.x), 0.5f, Random.Range(targetObject1.transform.position.z,targetObject2.transform.position.z));
+        tempLoc=new Vector3(Random.Range(targetObject1.transform.position.x,targetObject2.transform.position.x), 0.5f, Random.Range(targetObject1.transform.position.z,targetObject2.transform.position.z));
+        check=new Vector2(tempLoc.x, tempLoc.z);
+        check2=new Vector2(transform.position.x, transform.position.z);
+
+        while((check2-check).sqrMagnitude<20){
+            Debug.Log("WARNING " + ((check2-check).sqrMagnitude).ToString());
+            tempLoc=new Vector3(Random.Range(targetObject1.transform.position.x,targetObject2.transform.position.x), 0.5f, Random.Range(targetObject1.transform.position.z,targetObject2.transform.position.z));
+            check=new Vector2(tempLoc.x, tempLoc.z);
+            check2=new Vector2(transform.position.x, transform.position.z);
+        }
+        dest=tempLoc;
         marker.transform.position=dest;        
         reachCounter.text=(int.Parse(reachCounter.text)+1).ToString();
     }
