@@ -25,7 +25,6 @@ public class EnemyMovement : MonoBehaviour
     {
         enMesh = GetComponent<NavMeshAgent>();
         dest=Vector3.one;
-        RandomPos();
         enMesh.destination=dest;
         reachCounter.text="0";
         animator=transform.GetChild(0).GetComponent<Animator>();
@@ -63,7 +62,8 @@ public class EnemyMovement : MonoBehaviour
         }
 
         if(dest!=marker.transform.position && !eDeath){
-            enMesh.destination =marker.transform.position;
+            dest=marker.transform.position;
+            enMesh.destination =dest;
         }
     }
 
