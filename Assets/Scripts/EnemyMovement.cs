@@ -20,6 +20,7 @@ public class EnemyMovement : MonoBehaviour
     Vector2 check=new Vector2(1,1);
     Vector2 check2=new Vector2(1,1);
     Vector3 tempLoc;
+    bool colled=false;
     void Start()
     {
         enMesh = GetComponent<NavMeshAgent>();
@@ -45,11 +46,13 @@ public class EnemyMovement : MonoBehaviour
             animator.SetBool(isWalkingHash, false);
         }
 
-        if(enMesh.remainingDistance<1.5f&&!eDeath){
+        if(enMesh.remainingDistance<1.5f && !eDeath && !colled){
+            colled=true;
             RandomPos();
+            reachCounter.text=(int.Parse(reachCounter.text)+1).ToString();
             enMesh.destination=dest;            
         }
-
+        
         if(!eDeath && animator.GetCurrentAnimatorStateInfo(0).fullPathHash==-1546996312){
             eDeath=true;
             enMesh.destination=transform.position;
@@ -64,24 +67,27 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    
+
+
     public void RandomPos(){
         Debug.Log("RandomPos");
         tempLoc=new Vector3(Random.Range(targetObject1.transform.position.x,targetObject2.transform.position.x), 0.5f, Random.Range(targetObject1.transform.position.z,targetObject2.transform.position.z));
         check=new Vector2(tempLoc.x, tempLoc.z);
         check2=new Vector2(transform.position.x, transform.position.z);
 
-        while((check2-check).sqrMagnitude<20){
+        while((check2-check).sqrMagnitude<30){
             Debug.Log("WARNING " + ((check2-check).sqrMagnitude).ToString());
             tempLoc=new Vector3(Random.Range(targetObject1.transform.position.x,targetObject2.transform.position.x), 0.5f, Random.Range(targetObject1.transform.position.z,targetObject2.transform.position.z));
             check=new Vector2(tempLoc.x, tempLoc.z);
             check2=new Vector2(transform.position.x, transform.position.z);
         }
+
         dest=tempLoc;
-        marker.transform.position=dest;        
-        reachCounter.text=(int.Parse(reachCounter.text)+1).ToString();
+        marker.transform.position=dest;
+        colled=false;
     }
-
-
+    
 
     
 }
